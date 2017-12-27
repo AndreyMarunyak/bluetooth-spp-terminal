@@ -32,6 +32,7 @@
     <string name="none_found">Not found</string>
     <string name="command_hint">Enter command here</string>
     <string name="button_send">Send</string>
+    <string name="button_menu">Menu</string>
 
     <!-- Настройки -->
     <string name="log_settings_category">Command history:</string>

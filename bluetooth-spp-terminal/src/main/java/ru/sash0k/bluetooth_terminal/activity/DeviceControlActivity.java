@@ -389,6 +389,13 @@ public final class DeviceControlActivity extends BaseActivity {
         this.deviceName = deviceName;
         getActionBar().setSubtitle(deviceName);
     }
+
+
+
+    public void menuScreen(View view) {
+        MenuActivity.show(this);
+
+    }
     // ==========================================================================
 
     /**

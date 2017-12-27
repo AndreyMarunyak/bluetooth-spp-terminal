@@ -20,6 +20,7 @@
     <string name="none_found">Не найдено</string>
     <string name="command_hint">Введите команду</string>
     <string name="button_send">Отправить</string>
+    <string name="button_menu">Меню</string>
 
     <!-- Настройки -->
     <string name="log_settings_category">История команд:</string>

@@ -26,6 +26,13 @@
             android:layout_weight="1"
             android:onClick="sendCommand"
             android:text="@string/button_send" />
+        <Button
+            android:id="@+id/my"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="menuScreen"
+            android:text="@string/button_menu" />
     </LinearLayout>
 
     <TextView
