@@ -309,6 +309,11 @@ public final class DeviceControlActivity extends BaseActivity {
     /**
      * Отправка команды устройству
      */
+    public static void sendfunc(String commandText){
+
+
+    }
+
     public void sendCommand(View view) {
         if (commandEditText != null) {
             String commandString = commandEditText.getText().toString();

@@ -1,6 +1,7 @@
 package ru.sash0k.bluetooth_terminal.activity;
 
 import android.app.Activity;
+//import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,15 +33,25 @@ public class MenuActivity extends Activity {
 
     }
 
+
+
+
+
     public void LampCommand(View view) {
         Button myBtn = (Button) findViewById(R.id.button);
-        if (check == true) {
+
+
+
+        if (check) {
             check = false;
             myBtn.setText("On");
+            DeviceControlActivity.sendfunc("1");
         }
             else {
             myBtn.setText("Off");
             check = true;
+            DeviceControlActivity.sendfunc("0");
             }
+
     }
 }
