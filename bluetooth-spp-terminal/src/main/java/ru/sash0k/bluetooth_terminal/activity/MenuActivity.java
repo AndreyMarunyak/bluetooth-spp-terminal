@@ -33,6 +33,7 @@ public class MenuActivity extends Activity {
 
     }
 
+    DeviceControlActivity Turn = new DeviceControlActivity();
 
 
 
@@ -45,12 +46,12 @@ public class MenuActivity extends Activity {
         if (check) {
             check = false;
             myBtn.setText("On");
-            DeviceControlActivity.sendfunc("1");
+            Turn.sendFunc("1");
         }
             else {
             myBtn.setText("Off");
             check = true;
-            DeviceControlActivity.sendfunc("0");
+            Turn.sendFunc("0");
             }
 
     }

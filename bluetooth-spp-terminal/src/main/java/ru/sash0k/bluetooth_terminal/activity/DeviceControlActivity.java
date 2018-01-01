@@ -53,9 +53,9 @@ public final class DeviceControlActivity extends BaseActivity {
     private EditText commandEditText;
 
     // Настройки приложения
-    private boolean hexMode, checkSum, needClean;
+    public boolean hexMode, checkSum, needClean;
     private boolean show_timings, show_direction;
-    private String command_ending;
+    public String command_ending;
     private String deviceName;
 
     @Override
@@ -309,14 +309,9 @@ public final class DeviceControlActivity extends BaseActivity {
     /**
      * Отправка команды устройству
      */
-    public static void sendfunc(String commandText){
+    public void sendFunc(String commandString){
 
 
-    }
-
-    public void sendCommand(View view) {
-        if (commandEditText != null) {
-            String commandString = commandEditText.getText().toString();
             if (commandString.isEmpty()) return;
 
             // Дополнение команд в hex
@@ -336,9 +331,16 @@ public final class DeviceControlActivity extends BaseActivity {
                 connector.write(command);
                 appendLog(commandString, hexMode, true, needClean);
             }
-        }
+
     }
-    // ==========================================================================
+
+
+     public void sendCommand(View view) {
+
+         if (commandEditText != null) sendFunc(commandEditText.getText().toString());
+
+     }
+         // ==========================================================================
 
 
     /**
