@@ -12,10 +12,10 @@ import android.widget.Button;
 
 
 import ru.sash0k.bluetooth_terminal.R;
+import ru.sash0k.bluetooth_terminal.SendClass;
 
 
-
-public class MenuActivity extends Activity {
+public class MenuActivity extends BaseActivity{
 
     boolean check = false;
 
@@ -33,7 +33,7 @@ public class MenuActivity extends Activity {
 
     }
 
-    DeviceControlActivity Turn = new DeviceControlActivity();
+    SendClass Turn = new SendClass();
 
 
 
