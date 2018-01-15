@@ -1,13 +1,10 @@
 package ru.sash0k.bluetooth_terminal.activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.InputFilter;
@@ -21,17 +18,18 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import ru.sash0k.bluetooth_terminal.DeviceData;
 import ru.sash0k.bluetooth_terminal.R;
 import ru.sash0k.bluetooth_terminal.Utils;
+import ru.sash0k.bluetooth_terminal.bluetooth.BluetoothCallback;
+import ru.sash0k.bluetooth_terminal.bluetooth.BluetoothResponseHandler;
 import ru.sash0k.bluetooth_terminal.bluetooth.DeviceConnector;
 import ru.sash0k.bluetooth_terminal.bluetooth.DeviceListActivity;
 
-public final class DeviceControlActivity extends BaseActivity {
+public final class DeviceControlActivity extends BaseActivity implements BluetoothCallback {
     private static final String DEVICE_NAME = "DEVICE_NAME";
     private static final String LOG = "LOG";
 
@@ -63,8 +61,7 @@ public final class DeviceControlActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.settings_activity, false);
 
-        if (mHandler == null) mHandler = new BluetoothResponseHandler(this);
-        else mHandler.setTarget(this);
+        mHandler = new BluetoothResponseHandler(this);
 
         MSG_NOT_CONNECTED = getString(R.string.msg_not_connected);
         MSG_CONNECTING = getString(R.string.msg_connecting);
@@ -309,38 +306,34 @@ public final class DeviceControlActivity extends BaseActivity {
     /**
      * Отправка команды устройству
      */
-    public void sendFunc(String commandString){
+    public void sendFunc(String commandString) {
 
+        if (commandString.isEmpty()) return;
 
-            if (commandString.isEmpty()) return;
+        // Дополнение команд в hex
+        if (hexMode && (commandString.length() % 2 == 1)) {
+            commandString = "0" + commandString;
+            commandEditText.setText(commandString);
+        }
 
-            // Дополнение команд в hex
-            if (hexMode && (commandString.length() % 2 == 1)) {
-                commandString = "0" + commandString;
-                commandEditText.setText(commandString);
-            }
+        // checksum
+        if (checkSum) {
+            commandString += Utils.calcModulo256(commandString);
+        }
 
-            // checksum
-            if (checkSum) {
-                commandString += Utils.calcModulo256(commandString);
-            }
-
-            byte[] command = (hexMode ? Utils.toHex(commandString) : commandString.getBytes());
-            if (command_ending != null) command = Utils.concat(command, command_ending.getBytes());
-            if (isConnected()) {
-                connector.write(command);
-                appendLog(commandString, hexMode, true, needClean);
-            }
-
+        byte[] command = (hexMode ? Utils.toHex(commandString) : commandString.getBytes());
+        if (command_ending != null) command = Utils.concat(command, command_ending.getBytes());
+        if (isConnected()) {
+            connector.write(command);
+            appendLog(commandString, hexMode, true, needClean);
+        }
     }
 
 
-     public void sendCommand(View view) {
-
-         if (commandEditText != null) sendFunc(commandEditText.getText().toString());
-
-     }
-         // ==========================================================================
+    public void sendCommand(View view) {
+        if (commandEditText != null) sendFunc(commandEditText.getText().toString());
+    }
+    // ==========================================================================
 
 
     /**
@@ -349,7 +342,7 @@ public final class DeviceControlActivity extends BaseActivity {
      * @param message  - текст для отображения
      * @param outgoing - направление передачи
      */
-    void appendLog(String message, boolean hexMode, boolean outgoing, boolean clean) {
+    public void appendLog(String message, boolean hexMode, boolean outgoing, boolean clean) {
 
         StringBuilder msg = new StringBuilder();
         if (show_timings) msg.append("[").append(timeformat.format(new Date())).append("]");
@@ -391,79 +384,41 @@ public final class DeviceControlActivity extends BaseActivity {
     }
     // =========================================================================
 
-
-    void setDeviceName(String deviceName) {
+    public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
         getActionBar().setSubtitle(deviceName);
     }
-
-
 
     public void menuScreen(View view) {
         MenuActivity.show(this);
 
     }
-    // ==========================================================================
 
-    /**
-     * Обработчик приёма данных от bluetooth-потока
-     */
-    private static class BluetoothResponseHandler extends Handler {
-        private WeakReference<DeviceControlActivity> mActivity;
-
-        public BluetoothResponseHandler(DeviceControlActivity activity) {
-            mActivity = new WeakReference<DeviceControlActivity>(activity);
-        }
-
-        public void setTarget(DeviceControlActivity target) {
-            mActivity.clear();
-            mActivity = new WeakReference<DeviceControlActivity>(target);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            DeviceControlActivity activity = mActivity.get();
-            if (activity != null) {
-                switch (msg.what) {
-                    case MESSAGE_STATE_CHANGE:
-
-                        Utils.log("MESSAGE_STATE_CHANGE: " + msg.arg1);
-                        final ActionBar bar = activity.getActionBar();
-                        switch (msg.arg1) {
-                            case DeviceConnector.STATE_CONNECTED:
-                                bar.setSubtitle(MSG_CONNECTED);
-                                break;
-                            case DeviceConnector.STATE_CONNECTING:
-                                bar.setSubtitle(MSG_CONNECTING);
-                                break;
-                            case DeviceConnector.STATE_NONE:
-                                bar.setSubtitle(MSG_NOT_CONNECTED);
-                                break;
-                        }
-                        activity.invalidateOptionsMenu();
-                        break;
-
-                    case MESSAGE_READ:
-                        final String readMessage = (String) msg.obj;
-                        if (readMessage != null) {
-                            activity.appendLog(readMessage, false, false, activity.needClean);
-                        }
-                        break;
-
-                    case MESSAGE_DEVICE_NAME:
-                        activity.setDeviceName((String) msg.obj);
-                        break;
-
-                    case MESSAGE_WRITE:
-                        // stub
-                        break;
-
-                    case MESSAGE_TOAST:
-                        // stub
-                        break;
-                }
-            }
-        }
+    @Override
+    public void onStateConnected() {
+        getActionBar().setSubtitle(MSG_CONNECTED);
+        invalidateOptionsMenu();
     }
-    // ==========================================================================
+
+    @Override
+    public void onStateConnecting() {
+        getActionBar().setSubtitle(MSG_CONNECTING);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onStateNone() {
+        getActionBar().setSubtitle(MSG_NOT_CONNECTED);
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onMessageText(String message) {
+        appendLog(message, false, false, needClean);
+    }
+
+    @Override
+    public void onMessageDevice(String deviceName) {
+        setDeviceName(deviceName);
+    }
 }
