@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_action_device_bluetooth"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/action_bluetooth" />
+
+    <item
+        android:id="@+id/menu_terminal"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/menu_activity_terminal" />
+</menu>

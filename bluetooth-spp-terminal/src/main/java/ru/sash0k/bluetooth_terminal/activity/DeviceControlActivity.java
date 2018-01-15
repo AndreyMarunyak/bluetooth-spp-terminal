@@ -85,7 +85,7 @@ public final class DeviceControlActivity extends BaseActivity implements Bluetoo
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    sendCommand(null);
+                    sendCommand();
                     return true;
                 }
                 return false;
@@ -97,7 +97,7 @@ public final class DeviceControlActivity extends BaseActivity implements Bluetoo
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_ENTER:
-                            sendCommand(null);
+                            sendCommand();
                             return true;
                         default:
                             break;
@@ -329,8 +329,11 @@ public final class DeviceControlActivity extends BaseActivity implements Bluetoo
         }
     }
 
-
     public void sendCommand(View view) {
+        sendCommand();
+    }
+
+    public void sendCommand(){
         if (commandEditText != null) sendFunc(commandEditText.getText().toString());
     }
     // ==========================================================================

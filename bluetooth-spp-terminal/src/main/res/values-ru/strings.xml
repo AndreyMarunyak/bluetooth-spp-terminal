@@ -38,4 +38,11 @@
 
     <string name="need_clean">Очищать предыдущую команду</string>
     <string name="need_clean_summary">Удалять команду из поля ввода после отправки</string>
+
+    <!--MenuActivity-->
+    <string name="menu_activity_on">Вкл.</string>
+    <string name="menu_activity_off">Выкл.</string>
+    <string name="menu_activity_terminal">Терминал</string>
+
+
 </resources>

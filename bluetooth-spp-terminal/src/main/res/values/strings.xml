@@ -50,4 +50,10 @@
 
     <string name="need_clean">Clear previous command</string>
     <string name="need_clean_summary">Cleanup command view after sending</string>
+
+    <!--MenuActivity-->
+    <string name="menu_activity_on">On</string>
+    <string name="menu_activity_off">Off</string>
+    <string name="menu_activity_terminal">Terminal</string>
+
 </resources>
