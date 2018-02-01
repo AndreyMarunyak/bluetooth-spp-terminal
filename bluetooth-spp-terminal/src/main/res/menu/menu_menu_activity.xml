@@ -6,6 +6,7 @@
         android:showAsAction="ifRoom|withText"
         android:title="@string/action_bluetooth" />
 
+
     <item
         android:id="@+id/menu_terminal"
         android:orderInCategory="100"

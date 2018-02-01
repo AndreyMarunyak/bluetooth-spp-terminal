@@ -3,6 +3,7 @@ package ru.sash0k.bluetooth_terminal;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 
+import ru.sash0k.bluetooth_terminal.bluetooth.BluetoothCallback;
 import ru.sash0k.bluetooth_terminal.bluetooth.BluetoothResponseHandler;
 import ru.sash0k.bluetooth_terminal.bluetooth.DeviceConnector;
 
@@ -38,12 +39,14 @@ public class SendClass {
             connector.connect();
         } catch (IllegalArgumentException e) {
             Utils.log("setupConnector failed: " + e.getMessage());
-        }
+          }
     }
 
     public void sendFunc(String commandText) {
-        byte[] command = (commandText.getBytes());
-        command = Utils.concat(command, "/n".getBytes());
-        connector.write(command);
+        if (isConnected()) {
+            byte[] command = (commandText.getBytes());
+            command = Utils.concat(command, "/n".getBytes());
+            connector.write(command);
+        }
     }
 }

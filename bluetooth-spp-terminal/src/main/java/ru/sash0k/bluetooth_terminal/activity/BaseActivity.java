@@ -63,6 +63,7 @@ public abstract class BaseActivity extends Activity {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
         }
+
     }
     // ==========================================================================
 

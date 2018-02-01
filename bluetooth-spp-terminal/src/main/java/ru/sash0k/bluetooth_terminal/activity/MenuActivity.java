@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import ru.sash0k.bluetooth_terminal.R;
 import ru.sash0k.bluetooth_terminal.SendClass;
@@ -47,17 +48,20 @@ public class MenuActivity extends BaseActivity {
                 onLampButtonClicked();
             }
         });
+
+
+
     }
 
     public void onLampButtonClicked() {
         if (check) {
             check = false;
             myBtn.setText(getString(R.string.menu_activity_on));
-            turn.sendFunc(COMMAND_ON);
+            turn.sendFunc(COMMAND_OFF);
         } else {
             myBtn.setText(getString(R.string.menu_activity_off));
             check = true;
-            turn.sendFunc(COMMAND_OFF);
+            turn.sendFunc(COMMAND_ON);
         }
     }
 
@@ -146,12 +150,23 @@ public class MenuActivity extends BaseActivity {
 
         @Override
         public void onMessageText(String message) {
-
+            switch (message)
+            {
+                case "OFF\r\n": {
+                    myBtn.setText(getString(R.string.menu_activity_on));
+                    check = false;
+                }
+                case "ON\r\n": {
+                    myBtn.setText(getString(R.string.menu_activity_off));
+                    check = true;
+                }
+            }
         }
 
         @Override
         public void onMessageDevice(String deviceName) {
             getActionBar().setSubtitle(deviceName);
+            turn.sendFunc("?");
         }
     }
 }
