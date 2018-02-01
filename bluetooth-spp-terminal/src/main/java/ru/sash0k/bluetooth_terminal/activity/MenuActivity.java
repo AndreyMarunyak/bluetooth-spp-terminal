@@ -23,6 +23,7 @@ public class MenuActivity extends BaseActivity {
 
     public static final String COMMAND_ON = "1";
     public static final String COMMAND_OFF = "0";
+    public static final String COMMAND_CHECK = "?";
     boolean check = false;
     private SendClass turn;
     private Button myBtn;
@@ -166,7 +167,7 @@ public class MenuActivity extends BaseActivity {
         @Override
         public void onMessageDevice(String deviceName) {
             getActionBar().setSubtitle(deviceName);
-            turn.sendFunc("?");
+            turn.sendFunc(COMMAND_CHECK);
         }
     }
 }
